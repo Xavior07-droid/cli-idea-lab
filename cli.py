@@ -35,6 +35,25 @@ from models import (
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # ---------------------------------------------------------------------------
+# Colour output (ANSI). On Windows, colorama translates ANSI codes for
+# older terminals; modern Windows Terminal / PowerShell 7+ support ANSI
+# natively, but calling colorama.init() is harmless either way.
+# ---------------------------------------------------------------------------
+try:
+    import colorama
+    colorama.init()
+except ImportError:
+    pass
+
+YELLOW = "\033[93m"
+RESET = "\033[0m"
+
+
+def yellow(text):
+    return f"{YELLOW}{text}{RESET}"
+
+
+# ---------------------------------------------------------------------------
 # Bootstrap: we reuse Flask + SQLAlchemy just as a database engine here.
 # There is no web server involved — app.run() is never called.
 # ---------------------------------------------------------------------------
@@ -57,6 +76,24 @@ current_user = None
 # ---------------------------------------------------------------------------
 # Small helpers
 # ---------------------------------------------------------------------------
+BANNER = r"""
+ ____  _         __     __          _ _
+|  _ \| |        \ \   / /_ _ _   _| | |_
+| | | | |         \ \ / / _` | | | | | __|
+| |_| | |____      \ V / (_| | |_| | | |_
+|____/|______|      \_/ \__,_|\__,_|_|\__|
+
+        D I G I T A L   L E G A C Y   V A U L T
+                 -- CLI Edition --
+"""
+
+
+def show_banner():
+    clear()
+    print(yellow(BANNER))
+    print("=" * 60)
+
+
 def pause():
     input("\nPress Enter to continue...")
 
@@ -1018,6 +1055,8 @@ def logged_in_menu():
 
 def main():
     with app.app_context():
+        show_banner()
+        input("Press Enter to start...")
         while True:
             if not require_login():
                 choice = logged_out_menu()
