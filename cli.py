@@ -45,8 +45,20 @@ try:
 except ImportError:
     pass
 
+GREEN = "\033[92m"
+BRIGHT_GREEN = "\033[1;92m"
+CYAN = "\033[96m"
 YELLOW = "\033[93m"
+BOLD = "\033[1m"
 RESET = "\033[0m"
+
+
+def green(text):
+    return f"{GREEN}{text}{RESET}"
+
+
+def bright_green(text):
+    return f"{BRIGHT_GREEN}{text}{RESET}"
 
 
 def yellow(text):
@@ -76,22 +88,13 @@ current_user = None
 # ---------------------------------------------------------------------------
 # Small helpers
 # ---------------------------------------------------------------------------
-BANNER = r"""
- ____  _         __     __          _ _
-|  _ \| |        \ \   / /_ _ _   _| | |_
-| | | | |         \ \ / / _` | | | | | __|
-| |_| | |____      \ V / (_| | |_| | | |_
-|____/|______|      \_/ \__,_|\__,_|_|\__|
-
-        D I G I T A L   L E G A C Y   V A U L T
-                 -- CLI Edition --
-"""
-
-
-def show_banner():
-    clear()
-    print(yellow(BANNER))
-    print("=" * 60)
+LOGO = r"""
+  ____  _         __     __          _ _   
+ |  _ \| |        \ \   / /_ _ _   _| | |_ 
+ | | | | |         \ \ / / _` | | | | | __|
+ | |_| | |____      \ V / (_| | |_| | | |_ 
+ |____/|______|      \_/ \__,_|\__,_|_|\__|
+       D I G I T A L   L E G A C Y   V A U L T"""
 
 
 def pause():
@@ -104,12 +107,14 @@ def clear():
 
 def header(title):
     clear()
-    print("=" * 60)
-    print(f"  DIGITAL LEGACY VAULT — {title}")
+    print(bright_green(LOGO))
+    print(green("═" * 60))
+    print(f"  {BOLD}{title.upper()}{RESET}")
     if current_user:
-        print(f"  Logged in as: {current_user.full_name} ({current_user.email})")
-    print("=" * 60)
+        print(f"  Logged in as: {CYAN}{current_user.full_name}{RESET} ({current_user.email})")
+    print(green("═" * 60))
     print()
+
 
 
 def prompt(label, required=True, default=None):
@@ -1055,8 +1060,6 @@ def logged_in_menu():
 
 def main():
     with app.app_context():
-        show_banner()
-        input("Press Enter to start...")
         while True:
             if not require_login():
                 choice = logged_out_menu()
